@@ -1,0 +1,136 @@
+{
+    "apiVersion": "vlabs",
+    "properties": {
+      "orchestratorProfile": {
+        "orchestratorType": "Kubernetes",
+        "orchestratorRelease": "1.18",
+        "orchestratorVersion": "1.18.12",
+        "kubernetesConfig": {
+          "privateCluster": {
+            "enabled": true
+          },
+          "apiServerConfig": {
+            "--enable-admission-plugins":
+            "NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota",
+            "--tls-cipher-suites": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+          },
+          "kubeletConfig": {
+            "--tls-cipher-suites": "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "--max-pods": "105"
+          },
+          "controllerManagerConfig": {
+            "--feature-gates": "ServiceNodeExclusion=true",
+            "--node-monitor-grace-period": "5m",
+            "--pod-eviction-timeout": "1m",
+            "--route-reconciliation-period": "1m"
+          },
+          "networkPlugin": "azure",
+          "networkPolicy": "calico",
+          "containerRuntime": "docker",
+          "mobyVersion": "3.0.5",
+          "enablePodSecurityPolicy": true,
+          "enableRbac": true,
+          "etcdDiskSizeGB": "256",
+          "useInstanceMetadata": true,
+          "kubeProxyMode": "iptables",
+          "addons": [
+            {
+              "name": "tiller",
+              "enabled": false
+            },
+            {
+              "name": "kubernetes-dashboard",
+              "enabled": false
+            },
+            {
+              "name": "cluster-autoscaler",
+              "enabled": false
+            },
+            {
+              "name": "container-monitoring",
+              "enabled": false
+            },
+            {
+              "name": "blobfuse-flexvolume",
+              "enabled": false
+            },
+            {
+              "name": "smb-flexvolume",
+              "enabled": false
+            },
+            {
+              "name": "keyvault-flexvolume",
+              "enabled": false
+            },
+            {
+                "name": "azure-policy",
+                "enabled": true,
+                "config": {
+                  "auditInterval": "60",
+                  "constraintViolationsLimit": "100"
+                }
+            },
+            {
+              "name": "aad-pod-identity",
+              "enabled": false
+            }
+          ]
+        }
+      },
+      "masterProfile": {
+        "count": "${master_vm_count}",
+        "dnsPrefix": "${dns_prefix}",
+        "vmSize": "${vm_size_master}",
+        "distro": "${vm_distro_master}",
+        "osDiskSizeGB": "${vm_master_disk_size}",
+        "storageProfile": "ManagedDisks",
+        "vnetSubnetId": "${master_subnet_id}",
+        "vnetCidr": "${vnet_cidr}",
+        "availabilityProfile": "AvailabilitySet",
+        "cosmosEtcd": false
+      },
+      "agentPoolProfiles": [
+        {
+          "name": "akspool1",
+          "count": "${aks_agent_vm_count}",
+          "vmSize": "${vm_size_agent}",
+          "osType": "Linux",
+          "distro": "${vm_distro_agent}",
+          "osDiskSizeGB": "${vm_agent_disk_size}",
+          "storageProfile": "ManagedDisks",
+          "vnetSubnetId": "${aks_agent_subnet_id}",
+          "availabilityProfile": "VirtualMachineScaleSets",
+          "vmssOverProvisioningEnabled": true
+        },
+        {
+            "name": "akspool2",
+            "count": "${aks_agent_vm_count}",
+            "vmSize": "${vm_size_agent}",
+            "osType": "Linux",
+            "distro": "${vm_distro_agent}",
+            "osDiskSizeGB": "${vm_agent_disk_size}",
+            "storageProfile": "ManagedDisks",
+            "vnetSubnetId": "${aks_agent_subnet_id}",
+            "availabilityProfile": "VirtualMachineScaleSets",
+            "vmssOverProvisioningEnabled": true
+          }
+
+      ],
+      "aadProfile": {
+        "clientAppID": "clientId-xxxx",
+        "serverAppID": "appId-xxxx",
+        "adminGroupID": "adminId-xxxx",
+        "tenantID": "tenantId-xxxx"
+      },
+      "linuxProfile": {
+        "adminUsername": "${azure_user}",
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "${aks_cluster_ssh_key"
+            }
+          ]
+        }
+      }
+    }
+  }
